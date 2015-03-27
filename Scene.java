@@ -103,7 +103,7 @@ public class Scene implements GLEventListener{
                     int height) {
         GL2 gl = drawable.getGL().getGL2();
 
-        gl.glViewport (0, 0, (int) width, height); 
+        gl.glViewport (0, 0, width, height); 
         gl.glMatrixMode (GL2.GL_PROJECTION);
         gl.glLoadIdentity ();
         glu.gluPerspective(70.0,  width/(float) height, 0.01, 3000.0);
@@ -189,11 +189,13 @@ public class Scene implements GLEventListener{
     }
 
     public void setTheta(float a) {
-        theta = a/glut.glutGet(glut.GLUT_WINDOW_WIDTH);
+        a *= 0.005;
+        if (theta + a <= 90 || theta + a >= -90)
+            theta = -a;
     }
     
     public void setPhi(float a) {
-        phi = a*0.1;
+        phi = a*0.005;
     }
 
 }

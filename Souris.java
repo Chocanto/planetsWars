@@ -23,7 +23,7 @@ public class Souris implements MouseMotionListener{
     }
 
 
-    public  Souris(GLCanvas canvas,Scene dessin){
+    public  Souris(GLCanvas canvas, Scene dessin){
         this.canvas=canvas;
         this.dessin=dessin;
     }
@@ -39,9 +39,9 @@ public class Souris implements MouseMotionListener{
     public void mouseExited (MouseEvent me) {}
 
     public void mouseMoved (MouseEvent me) {
-        System.out.println(me.getX() + ";" + me.getY());
-        dessin.setTheta(me.getX());
-        dessin.setPhi(me.getY());
+        System.out.println(me.getXOnScreen() + ";" + me.getYOnScreen());
+        dessin.setTheta(me.getXOnScreen());
+        dessin.setPhi(me.getYOnScreen());
     }
 
     public void mouseDragged (MouseEvent me) {}
