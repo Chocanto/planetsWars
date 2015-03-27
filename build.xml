@@ -1,0 +1,74 @@
+<project name="Sample" basedir="." default="compile">
+    
+    <property name="classname" value="planetsWars.Main"/>
+  
+ 
+  <condition property="isMac">
+      <os family="mac"/>
+  </condition>
+  
+  <condition property="isLinux">
+      <and>
+          <os family="unix"/>
+          
+          <not>
+              <os family="mac"/>
+          </not>
+          
+      </and>
+  </condition>
+ 
+  <target name="doMac" if="isMac">
+      <echo message="Came into the Mac target"/>
+       <property name="myjoglpos" value="/Users/emmanuelmelin/Documents/developpements/UTP/jogamp-all-platforms/jar/"/>
+       <property name="myjsonpos" value="/Users/emmanuelmelin/Documents/donnees/2013-2014/enseignement/IHM/testopenstreetmap/swingX-ws/trunk/lib/optional/"/>
+       <property name="myjogl-all" value="jogl-all"/>
+       <property name="mygluegen-rt" value="gluegen-rt"/>
+       <property name="mygluegen" value="gluegen"/>
+       <property name="myjson" value="json"/>
+        </target>
+  
+  <target name="doLinux" if="isLinux">
+      <echo message="Came into the Unix target"/>
+      <property name="myjoglpos" value="/usr/share/java/"/>
+      <property name="myjogl-all" value="jogl2"/>
+      <property name="mygluegen-rt" value="gluegen2-rt"/>
+      <property name="myjsonpos" value="/pub/2A/Prog3D/"/>
+      <property name="myjson" value="java-json"/>
+  </target>
+  
+  <target name="OS-TEST" depends="doMac,  doLinux">
+      <echo message="Running OS-TEST target"/>
+  </target>
+  
+  
+    
+    <target name="compile" depends="OS-TEST">
+        <echo message="Came into the Unix target"/>
+        <javac srcdir="." includeantruntime="false">
+            <classpath>
+                <pathelement location="${myjoglpos}${myjogl-all}.jar"/>
+                <pathelement location="${myjoglpos}${mygluegen-rt}.jar"/>
+                <pathelement location="${myjsonpos}${myjson}.jar"/>
+            </classpath>
+        </javac>
+    </target>
+    
+    <target name="run" depends="compile">
+        <java classname="${classname}" fork="true">
+            <classpath>
+                <pathelement path=".."/>
+                <pathelement location="${myjoglpos}${myjogl-all}.jar"/>
+                <pathelement location="${myjoglpos}${mygluegen-rt}.jar"/>
+                   <pathelement location="${myjsonpos}${myjson}.jar"/>
+            </classpath>
+        </java>
+    </target>
+    
+    <target name="clean">
+        <delete>
+            <fileset dir="." includes="*.class"/>
+        </delete>
+    </target>
+    
+</project>
