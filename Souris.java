@@ -39,7 +39,6 @@ public class Souris implements MouseMotionListener{
     public void mouseExited (MouseEvent me) {}
 
     public void mouseMoved (MouseEvent me) {
-        System.out.println(me.getXOnScreen() + ";" + me.getYOnScreen());
         dessin.setTheta(me.getXOnScreen());
         dessin.setPhi(me.getYOnScreen());
     }

@@ -22,12 +22,12 @@ public class Main extends JFrame{
         setSize(500, 500);
         final GLCanvas canvas = new GLCanvas ();
         final Scene scene = new Scene();
-        //final myKeyListener myListener=new myKeyListener(canvas,cours);
+        final Clavier keyListener=new Clavier(canvas,scene);
         final Souris mouseListener=new Souris(canvas,scene);
         final FPSAnimator anim = new FPSAnimator(canvas,60);
 
         canvas.addGLEventListener(scene);
-        //canvas.addKeyListener(myListener);
+        canvas.addKeyListener(keyListener);
         canvas.addMouseMotionListener(mouseListener);
         this.getContentPane().add(canvas);
         anim.start();

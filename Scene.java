@@ -23,29 +23,57 @@ public class Scene implements GLEventListener{
     private float rot = 0f;
     private float rotAcc = 0.1f;
 
-    private double R = 10.0f;
+    private double R = 1.0f;
     private double phi = 1.0f;
     private double theta = 1.0f;
 
-    private double eyeX = 10.0f;
-    private double eyeY = 10.0f;
-    private double eyeZ = 10.0f;
+    private double eyeX = 20.0f;
+    private double eyeY = 20.0f;
+    private double eyeZ = 20.0f;
     private double delta = 0.1f;
+
+    private double dirX;
+    private double dirY;
+    private double dirZ;
     
     private Texture texture;
 
-    float time_old=0f; //pour test perf
+    float time_old=0f; //pour test perfo
+
+    private Planet planet1; 
+    private Planet planet2;
+    private Planet planet3;
 
     @Override
     public void display(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
         gl.glClear (GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+
+        float lmodel_ambient[]={0.70f,0.70f,0.70f,1.0f}; 
+
         gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        
         gl.glLoadIdentity();
 
-        double dirX = R*Math.sin(phi)*Math.sin(theta);
-        double dirY = R*Math.cos(phi);
-        double dirZ = R*Math.sin(phi)*Math.cos(theta);
+        /**Lumière**/
+        gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT,lmodel_ambient, 0); 
+        gl.glEnable(GL2.GL_LIGHTING);
+
+        gl.glEnable(GL2.GL_LIGHT0);
+        float dif[] = {1.0f,1.0f,0.0f,1.0f};
+        gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_DIFFUSE,dif, 0);
+
+        float amb[] = {1.0f,0.0f,0.0f,1.0f};
+        gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_AMBIENT,amb, 0);
+
+        float l_pos[] = { 10.0f,10.0f,10.0f,0.0f };
+        gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_POSITION,l_pos, 0);
+
+
+
+        dirX = R*Math.sin(phi)*Math.sin(theta);
+        dirY = R*Math.cos(phi);
+        dirZ = R*Math.sin(phi)*Math.cos(theta);
 
         glu.gluLookAt(  eyeX, eyeY, eyeZ,
                         eyeX+dirX, eyeY+dirY, eyeZ+dirZ,
@@ -53,7 +81,15 @@ public class Scene implements GLEventListener{
         gl.glPushMatrix();
         repere( drawable, 5.0f);
 
-        glut.glutSolidSphere(2, 20, 10);
+        planet1.display(gl);
+        
+        gl.glPopMatrix();
+        planet2.display(gl);
+        
+        gl.glPopMatrix();
+        planet3.display(gl);
+
+
 
         rot += rotAcc;
         /*
@@ -71,8 +107,8 @@ public class Scene implements GLEventListener{
 
         /**Affichage fps**/
         float time=drawable.getAnimator().getLastFPS();
-        if (time!=time_old) System.out.println("Framerate: "+time + "timeold: "+time_old);
-            time_old=time;
+        //if (time!=time_old) System.out.println("Framerate: "+time + "timeold: "+time_old);
+        //    time_old=time;
     }
 
     @Override
@@ -87,7 +123,7 @@ public class Scene implements GLEventListener{
         GL2 gl = drawable.getGL().getGL2();
         gl.glClearColor (0f, 0f, 0f, 1.0f); 
         gl.glEnable(GL2.GL_DEPTH_TEST);
-        try {
+        /*try {
             texture = TextureIO.newTexture(new File("./briques.png"), false);
             texture.enable(gl);
             texture.bind(gl);
@@ -95,7 +131,12 @@ public class Scene implements GLEventListener{
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
+
+        //chargement des planètes
+        planet1 = new Planet(10., 10., 0., 0., glu);
+        planet2 = new Planet(3., 10., 1., 20., glu);
+        planet3 = new Planet(1., 10., 0.5, 5., glu);
     }
 
     @Override
@@ -198,4 +239,30 @@ public class Scene implements GLEventListener{
         phi = a*0.005;
     }
 
+    /**Méthodes de déplacement au clavier**/
+    public void forward() {
+        eyeX = eyeX+dirX;
+        eyeY = eyeY+dirY;
+        eyeZ = eyeZ+dirZ;
+    }
+    
+    public void backward() {
+        eyeX = eyeX-dirX;
+        eyeY = eyeY-dirY;
+        eyeZ = eyeZ-dirZ;
+    }
+
+    public void moveRight() {
+    }
+    
+    public void moveLeft() {
+    }
+    
+    public void moveUp() {
+    }
+    
+    public void moveDown() {
+    }
+
 }
+
