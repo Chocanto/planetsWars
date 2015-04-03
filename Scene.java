@@ -36,38 +36,39 @@ public class Scene implements GLEventListener{
     private double dirY;
     private double dirZ;
     
-    private Texture texture;
 
     float time_old=0f; //pour test perfo
 
     private Planet planet1; 
     private Planet planet2;
     private Planet planet3;
+    private Planet planet4;
+    private Planet planet5;
 
     @Override
     public void display(GLAutoDrawable drawable) {
         GL2 gl = drawable.getGL().getGL2();
         gl.glClear (GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
-        float lmodel_ambient[]={0.70f,0.70f,0.70f,1.0f}; 
+        float lmodel_ambient[]={1.f,1.f,1.f,1.0f}; 
 
         gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         
         gl.glLoadIdentity();
 
         /**Lumière**/
+        gl.glShadeModel(GL2.GL_SMOOTH);
         gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT,lmodel_ambient, 0); 
         gl.glEnable(GL2.GL_LIGHTING);
 
         gl.glEnable(GL2.GL_LIGHT0);
-        float dif[] = {1.0f,1.0f,0.0f,1.0f};
+        float dif[] = {1.0f,1.0f,0.5f,1.0f};
         gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_DIFFUSE,dif, 0);
 
         float amb[] = {1.0f,0.0f,0.0f,1.0f};
         gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_AMBIENT,amb, 0);
 
-        float l_pos[] = { 10.0f,10.0f,10.0f,0.0f };
-        gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_POSITION,l_pos, 0);
+        float l_pos[] = { 0.0f,0.0f,0.0f,1.0f };
 
 
 
@@ -78,16 +79,24 @@ public class Scene implements GLEventListener{
         glu.gluLookAt(  eyeX, eyeY, eyeZ,
                         eyeX+dirX, eyeY+dirY, eyeZ+dirZ,
                         0,1,0);
+        gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_POSITION,l_pos, 0);
         gl.glPushMatrix();
         repere( drawable, 5.0f);
 
         planet1.display(gl);
         
         gl.glPopMatrix();
+        gl.glPushMatrix();
         planet2.display(gl);
         
-        gl.glPopMatrix();
         planet3.display(gl);
+        
+        gl.glPopMatrix();
+        gl.glPushMatrix();
+        planet4.display(gl);
+        
+        gl.glPopMatrix();
+        planet5.display(gl);
 
 
 
@@ -123,20 +132,15 @@ public class Scene implements GLEventListener{
         GL2 gl = drawable.getGL().getGL2();
         gl.glClearColor (0f, 0f, 0f, 1.0f); 
         gl.glEnable(GL2.GL_DEPTH_TEST);
-        /*try {
-            texture = TextureIO.newTexture(new File("./briques.png"), false);
-            texture.enable(gl);
-            texture.bind(gl);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
 
         //chargement des planètes
-        planet1 = new Planet(10., 10., 0., 0., glu);
-        planet2 = new Planet(3., 10., 1., 20., glu);
-        planet3 = new Planet(1., 10., 0.5, 5., glu);
+        planet1 = new Planet(25., 10., 0., 0., glu, "Textures/sun01.jpg");
+        planet1.setEmission(new float[]{1f, 0.8f, 0f, 1f});
+        planet2 = new Planet(3., 10., 1., 50., glu, "Textures/planet01.jpg");
+        planet3 = new Planet(1., 10., 0.5, 5., glu, "Textures/planet02.jpg");
+        planet4 = new Planet(5., 10., 0.5, 85., glu, "Textures/planet03.jpg");
+        planet4.setEmission(new float[]{0.5f, 0f, 0f, 0.5f});
+        planet5 = new Planet(8., 10., 0.2, 100., glu, "Textures/planet05.png");
     }
 
     @Override
