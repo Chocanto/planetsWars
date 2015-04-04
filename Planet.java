@@ -52,7 +52,7 @@ public class Planet {
         glu.gluQuadricTexture(sphere, true);
         glu.gluQuadricNormals(sphere, GLU.GLU_SMOOTH);
         gl.glColor3d(1.0, 1.0, 1.0);
-        glu.gluSphere(sphere, size, 20, 20);
+        glu.gluSphere(sphere, size, 30, 30);
 
         it++;
     }

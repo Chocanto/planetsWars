@@ -17,36 +17,56 @@ public class Clavier implements KeyListener{
     public void keyPressed(KeyEvent e) {
         switch(e.getKeyCode()) {
             case KeyEvent.VK_Z:
-                dessin.forward();
+                dessin.isMovingForward = true;
                 break;
             case KeyEvent.VK_S:
-                dessin.backward();
+                dessin.isMovingBackward = true;
                 break;
             case KeyEvent.VK_D:
-                dessin.moveRight();
+                dessin.isMovingRight = true;
                 break;
             case KeyEvent.VK_Q:
-                dessin.moveLeft();
+                dessin.isMovingLeft = true;
                 break;
             case KeyEvent.VK_E:
-                dessin.moveUp();
+                dessin.isMovingUp = true;
                 break;
             case KeyEvent.VK_A:
-                dessin.moveDown();
+                dessin.isMovingDown = true;
                 break;
-
+            case KeyEvent.VK_ESCAPE:
+                dessin.trackToggle();
+                break;
         }
 
     }
 
     public void keyReleased(KeyEvent e) {
-
+        switch(e.getKeyCode()) {
+            case KeyEvent.VK_Z:
+                dessin.isMovingForward = false;
+                break;
+            case KeyEvent.VK_S:
+                dessin.isMovingBackward = false;
+                break;
+            case KeyEvent.VK_D:
+                dessin.isMovingRight = false;
+                break;
+            case KeyEvent.VK_Q:
+                dessin.isMovingLeft = false;
+                break;
+            case KeyEvent.VK_E:
+                dessin.isMovingUp = false;
+                break;
+            case KeyEvent.VK_A:
+                dessin.isMovingDown = false;
+                break;
+        }
     }
-    
+
     public void keyTyped(KeyEvent e) {
-
     }
 
-    
+
 
 }
