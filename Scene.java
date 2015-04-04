@@ -21,11 +21,16 @@ import javax.swing.SwingUtilities;
 import javax.swing.JFrame;
 import java.awt.Point;
 import java.awt.Robot;
+import com.jogamp.opengl.util.awt.TextRenderer;
+import java.awt.Font;
+import java.text.DecimalFormat;
 
 public class Scene implements GLEventListener{
 
     private GLCanvas parent;
     private Robot robot;
+
+    private TextRenderer textFPS;
 
     /**Event souris**/
     private boolean trackMouse = true;
@@ -105,8 +110,6 @@ public class Scene implements GLEventListener{
 
         float l_pos[] = { 0.0f,0.0f,0.0f,1.0f };
 
-
-
         dirX = R*Math.sin(phi)*Math.sin(theta);
         dirY = R*Math.cos(phi);
         dirZ = R*Math.sin(phi)*Math.cos(theta);
@@ -115,9 +118,12 @@ public class Scene implements GLEventListener{
                         eyeX+dirX, eyeY+dirY, eyeZ+dirZ,
                         0,1,0);
         gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_POSITION,l_pos, 0);
+
+        /**Affichage repère**/
         gl.glPushMatrix();
         repere( drawable, 5.0f);
 
+        /**Affichage planètes**/
         planet1.display(gl);
 
         gl.glPopMatrix();
@@ -145,11 +151,27 @@ public class Scene implements GLEventListener{
             gl.glRotated(rot*0.1, 0., 0., 1);
             gl.glMatrixMode(GL2.GL_MODELVIEW);
 */
+        /*gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        IntBuffer pignonsbuf = Buffers.newDirectIntBuffer(pignons);
+        gl.glVertexPointer(3, GL2.GL_INT,0,pignonsbuf);
+        gl.glDrawElements(GL2.GL_TRIANGLES,6*3,GL2.GL_UNSIGNED_INT,pignonsbuf);*/
 
         /**Affichage fps**/
         float time=drawable.getAnimator().getLastFPS();
-        //if (time!=time_old) System.out.println("Framerate: "+time + "timeold: "+time_old);
-        //    time_old=time;
+        textFPS.beginRendering(drawable.getWidth(), drawable.getHeight());
+        textFPS.setColor(1.0f, 1.0f, 1.0f, 0.5f);
+
+        drawInfos(drawable);
+
+        textFPS.draw("FPS:\n"+time, 5, 20);
+        if (trackMouse)
+            textFPS.draw("Tracking mouse (ESC to disable)", 5, 5);
+        else {
+            textFPS.setColor(1.0f, 0.2f, 0.2f, 1.0f);
+            textFPS.draw("Not tracking mouse (ESC to enable)", 5, 5);
+        }
+        textFPS.endRendering();
+        time_old=time;
     }
 
     @Override
@@ -164,6 +186,8 @@ public class Scene implements GLEventListener{
         GL2 gl = drawable.getGL().getGL2();
         gl.glClearColor (0f, 0f, 0f, 1.0f);
         gl.glEnable(GL2.GL_DEPTH_TEST);
+
+        textFPS = new TextRenderer(new Font("SansSerif", Font.BOLD, 11));
 
         //chargement des planètes
         planet1 = new Planet(25., 10., 0., 0., glu, "Textures/sun01.jpg");
@@ -251,6 +275,15 @@ public class Scene implements GLEventListener{
         gl.glLineWidth(0.1f);
         gl.glPopAttrib();
 
+    }
+
+    public void drawInfos(GLAutoDrawable drawable) {
+        textFPS.draw("eyeX: "+new DecimalFormat("#.###").format(eyeX),
+                    5, drawable.getHeight()-15);
+        textFPS.draw("eyeY: "+new DecimalFormat("#.###").format(eyeY),
+                    5, drawable.getHeight()-30);
+        textFPS.draw("eyeZ: "+new DecimalFormat("#.###").format(eyeZ),
+                    5, drawable.getHeight()-45);
     }
 
     public void moveEyeX(float a) {
