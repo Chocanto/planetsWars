@@ -40,8 +40,7 @@ public class Scene implements GLEventListener{
 
     private GLU glu = new GLU();
     private GLUT glut = new GLUT();
-    private float rot = 0f;
-    private float rotAcc = 0.1f;
+    private float acc = 0.5f;
 
     private float mouseSpeed = 0.002f; //vitesse de la souris
 
@@ -134,9 +133,6 @@ public class Scene implements GLEventListener{
         gl.glPopMatrix();
         planet5.display(gl);
 
-
-
-        rot += rotAcc;
         /*
             gl.glPopMatrix();
             gl.glTexParameteri(GL2.GL_TEXTURE_2D,
@@ -257,14 +253,6 @@ public class Scene implements GLEventListener{
 
     }
 
-    public void addZoom(float a) {
-        this.R += a;
-    }
-
-    public void addRotAcc(float a) {
-        this.rotAcc += a;
-    }
-
     public void moveEyeX(float a) {
        theta += a;
     }
@@ -287,27 +275,37 @@ public class Scene implements GLEventListener{
 
     /**Méthodes de déplacement au clavier**/
     public void forward() {
-        eyeX = eyeX+dirX;
-        eyeY = eyeY+dirY;
-        eyeZ = eyeZ+dirZ;
+        eyeX += acc*Math.sin(phi)*Math.sin(theta);
+        eyeY += acc*Math.cos(phi);
+        eyeZ += acc*Math.sin(phi)*Math.cos(theta);
     }
 
     public void backward() {
-        eyeX = eyeX-dirX;
-        eyeY = eyeY-dirY;
-        eyeZ = eyeZ-dirZ;
+        eyeX -= acc*Math.sin(phi)*Math.sin(theta);
+        eyeY -= acc*Math.cos(phi);
+        eyeZ -= acc*Math.sin(phi)*Math.cos(theta);
     }
 
     public void moveRight() {
+        eyeX += acc*Math.sin(theta-1.570796);
+        eyeZ += acc*Math.cos(theta-1.570796);
     }
 
     public void moveLeft() {
+        eyeX += acc*Math.sin(theta+1.570796);
+        eyeZ += acc*Math.cos(theta+1.570796);
     }
 
     public void moveUp() {
+        eyeX += acc*Math.sin(phi-1.570796)*Math.sin(theta);
+        eyeY += acc*Math.cos(phi-1.570796);
+        eyeZ += acc*Math.sin(phi-1.570796)*Math.cos(theta);
     }
 
     public void moveDown() {
+        eyeX += acc*Math.sin(phi+1.570796)*Math.sin(theta);
+        eyeY += acc*Math.cos(phi+1.570796);
+        eyeZ += acc*Math.sin(phi+1.570796)*Math.cos(theta);
     }
 
     public void trackToggle() {
