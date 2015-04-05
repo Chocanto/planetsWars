@@ -6,6 +6,7 @@ public class Isocaedre extends VBOModel {
     private double x;
     private double y;
     private double z;
+    private int it=0;
 
     public Isocaedre(GL2 gl) {
         super(gl, 12, 20);
@@ -72,13 +73,16 @@ public class Isocaedre extends VBOModel {
                 edges[i+2] = 6+((1+(i/6-5))%5);
             }
         }
+
+        super.build();
     }
 
     @Override
     public void display(GL2 gl) {
+        it++;
         //gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
-        //gl.glDisable(GL2.GL_LIGHTING); //Pour afficher les couleurs
-        gl.glScaled(5.0, 5.0, 5.0);
+        //gl.glRotated(it, 0.0, 1.0, 0.0);
+        gl.glScaled(10.0, 10.0, 10.0);
 
         super.display(gl);
     }

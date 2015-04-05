@@ -91,7 +91,7 @@ public class Scene implements GLEventListener{
         gl.glClear (GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
         //gl.glEnable(GL2.GL_CULL_FACE);
 
-        float lmodel_ambient[]={1.f,1.f,1.f,0.5f};
+        float lmodel_ambient[]={1.f,1.f,1.f,0.0f};
 
         gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -106,7 +106,7 @@ public class Scene implements GLEventListener{
         float dif[] = {1.0f,1.0f,0.5f,1.0f};
         gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_DIFFUSE,dif, 0);
 
-        float amb[] = {1.0f,0.0f,0.0f,1.0f};
+        float amb[] = {1.0f,0.0f,0.0f,0.1f};
         gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_AMBIENT,amb, 0);
 
         float l_pos[] = { 0.0f,0.0f,0.0f,1.0f };
