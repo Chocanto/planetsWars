@@ -208,7 +208,7 @@ public class Scene implements GLEventListener{
 
         planet5 = new Planet(8., 10., 0.2, 100., glu, "Textures/planet05.png");
 
-        isocaedre = new Isocaedre(0, 0, 0, gl);
+        isocaedre = new Isocaedre(gl);
     }
 
     @Override
