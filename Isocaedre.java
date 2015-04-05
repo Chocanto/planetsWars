@@ -80,9 +80,9 @@ public class Isocaedre {
                 edges[i+2] = 1+((1+(i/6-5))%5);
             }
             else {
-                edges[i] = 1+((i/6-5)%5);
-                edges[i+1] = 5+((i/6-5)%6);
-                edges[i+2] = 5+((1+(i/6-5))%6);
+                edges[i] = 1+((1+(i/6-5))%5);
+                edges[i+1] = 5+((1+(i/6-5))%6);
+                edges[i+2] = 6+((1+(i/6-5))%5);
             }
         }
 
@@ -114,8 +114,11 @@ public class Isocaedre {
 
     public void display(GL2 gl) {
 
-        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
-        //gl.glDisable(GL2.GL_LIGHTING);
+        //gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+
+        //gl.glDisable(GL2.GL_LIGHTING); //Pour afficher les couleurs
+
+        gl.glScaled(5.0, 5.0, 5.0);
 
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
