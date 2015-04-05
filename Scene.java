@@ -70,6 +70,8 @@ public class Scene implements GLEventListener{
     private Planet planet4;
     private Planet planet5;
 
+    private Isocaedre isocaedre;
+
     public Scene(GLCanvas parent) {
         this.parent = parent;
 
@@ -82,13 +84,12 @@ public class Scene implements GLEventListener{
 
     @Override
     public void display(GLAutoDrawable drawable) {
-
-
         mouseAction(drawable);
         keyboardAction();
 
         GL2 gl = drawable.getGL().getGL2();
         gl.glClear (GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+        //gl.glEnable(GL2.GL_CULL_FACE);
 
         float lmodel_ambient[]={1.f,1.f,1.f,0.5f};
 
@@ -137,7 +138,12 @@ public class Scene implements GLEventListener{
         planet4.display(gl);
 
         gl.glPopMatrix();
+        gl.glPushMatrix();
         planet5.display(gl);
+
+        gl.glPopMatrix();
+        gl.glTranslated(30, 0, 0);
+        isocaedre.display(gl);
 
         /*
             gl.glPopMatrix();
@@ -201,6 +207,8 @@ public class Scene implements GLEventListener{
         planet4.setEmission(new float[]{0.5f, 0f, 0f, 0.5f});
 
         planet5 = new Planet(8., 10., 0.2, 100., glu, "Textures/planet05.png");
+
+        isocaedre = new Isocaedre(0, 0, 0, gl);
     }
 
     @Override
