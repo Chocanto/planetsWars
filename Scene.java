@@ -142,7 +142,7 @@ public class Scene implements GLEventListener{
         planet5.display(gl);
 
         gl.glPopMatrix();
-        gl.glTranslated(30, 0, 0);
+        gl.glTranslated(50, 0, 0);
         isocaedre.display(gl);
 
         /*

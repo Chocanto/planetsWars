@@ -80,7 +80,7 @@ public class Isocaedre extends VBOModel {
     @Override
     public void display(GL2 gl) {
         it++;
-        //gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
         //gl.glRotated(it, 0.0, 1.0, 0.0);
         gl.glScaled(10.0, 10.0, 10.0);
 

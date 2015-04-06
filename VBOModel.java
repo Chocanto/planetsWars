@@ -14,7 +14,7 @@ public class VBOModel {
 
     protected int[] normalsLine;
     protected double[] normalsLineVert;
-    protected double normDispLen = 1.0; //coef. des normales à afficher
+    protected double normDispLen = 0.5; //coef. des normales à afficher
 
     protected int verticesVBO;
     protected int edgesVBO;
@@ -87,14 +87,14 @@ public class VBOModel {
     }
 
     public void display(GL2 gl) {
-        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
-
-        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, verticesVBO);
-        gl.glVertexPointer(3, GL2.GL_DOUBLE, 0, 0);
+        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, normalsVBO);
         gl.glNormalPointer(GL2.GL_DOUBLE, 0, 0);
+
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, verticesVBO);
+        gl.glVertexPointer(3, GL2.GL_DOUBLE, 0, 0);
 
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, edgesVBO);
         gl.glDrawElements(GL2.GL_TRIANGLES, 60, GL2.GL_UNSIGNED_INT, 0);
@@ -104,7 +104,7 @@ public class VBOModel {
         gl.glVertexPointer(3, GL2.GL_DOUBLE, 0, 0);
 
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, normalsLineVBO);
-        gl.glDrawElements(GL2.GL_LINES, 24, GL2.GL_UNSIGNED_INT, 0);
+        gl.glDrawElements(GL2.GL_LINES, 40, GL2.GL_UNSIGNED_INT, 0);
         /**************************/
 
         gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
@@ -116,6 +116,7 @@ public class VBOModel {
 
     public void computeNormals() {
 
+        double[] normalsFaces = new double[edges.length];
         double[] result = new double[3];
         double[] v1 = new double[3];
         double[] v2 = new double[3];
@@ -124,14 +125,7 @@ public class VBOModel {
         double[] tmp2 = new double[3];
         double length = 0.0;
 
-        for (int i=0; i<vertices.length; i+=3)
-            System.out.println(vertices[i]+";"+vertices[i+1]+";"+vertices[i+2]);
-
-        System.out.println("#########################");
-
-        for (int i=0; i<edges.length; i+=3)
-            System.out.println(edges[i]+";"+edges[i+1]+";"+edges[i+2]);
-
+        /**Normales par face**/
         for (int i=0; i<edges.length; i+=3) {
             //remplir les tableaux
             for (int j=0; j<3; j++) {
@@ -140,16 +134,16 @@ public class VBOModel {
                 v3[j] = vertices[edges[i+2]*3+j];
             }
 
-
-            System.out.println("----------------------------");
-            System.out.println(v1[0]+";"+v1[1]+";"+v1[2]);
-            System.out.println(v2[0]+";"+v2[1]+";"+v2[2]);
-            System.out.println(v3[0]+";"+v3[1]+";"+v3[2]);
-
             //faire le calcul de la normale
             for (int j=0; j<3; j++) {
-                tmp1[j] = v1[j] - v2[j];
-                tmp2[j] = v1[j] - v3[j];
+                if (i < 15 || (i > 30 && i%6!=0)) {
+                    tmp1[j] = v1[j] - v2[j];
+                    tmp2[j] = v1[j] - v3[j];
+                }
+                else {
+                    tmp1[j] = v1[j] - v3[j];
+                    tmp2[j] = v1[j] - v2[j];
+                }
             }
 
             result[0] = tmp1[1] * tmp2[2] - tmp1[2] * tmp2[1];
@@ -175,23 +169,22 @@ public class VBOModel {
 
 
         /**Génération de l'affichage des normales  : **/
-        //for (int i=0; i<edges.length*2; i+=6) {
-        for (int i=0; i<30; i+=6) {
+        //for (int i=60; i<edges.length*2; i+=6) {
+        for (int i=0; i<edges.length*2; i+=6) {
             normalsLineVert[i] = vertices[edges[i/2]*3];
             normalsLineVert[i+1] = vertices[edges[i/2]*3+1];
             normalsLineVert[i+2] = vertices[edges[i/2]*3+2];
 
             normalsLineVert[i+3] = vertices[edges[i/2]*3] + normals[i/2] * normDispLen;
-            normalsLineVert[i+4] = vertices[edges[i/2]*3+1] + normals[(i+1)/2] * normDispLen;
-            normalsLineVert[i+5] = vertices[edges[i/2]*3+2] + normals[(i+2)/2] * normDispLen;
+            normalsLineVert[i+4] = vertices[edges[i/2]*3+1] + normals[(i/2)+1] * normDispLen;
+            normalsLineVert[i+5] = vertices[edges[i/2]*3+2] + normals[(i/2)+2] * normDispLen;
         }
 
-        for (int i=0; i<normalsLine.length; i+=2) {
+        for (int i=0; i<normalsLine.length; i++) {
             normalsLine[i] = i;
-            normalsLine[i+1] = i+1;
         }
 
-        //for (int i=0; i<normalsLineVert.length; i+=3)
-        //    System.out.println(normalsLineVert[i]+";"+normalsLineVert[i+1]+";"+normalsLineVert[i+2]);
+        //for (int i=0; i<normalsLine.length; i++)
+        //System.out.println(normalsLineVert[normalsLine[0]*3]+";"+normalsLineVert[normalsLine[1]*3]);
     }
 }
