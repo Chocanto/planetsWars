@@ -50,12 +50,12 @@ public class Scene implements GLEventListener{
     private float mouseSpeed = 0.002f; //vitesse de la souris
 
     private double R = 1.0f;
-    private double phi = 1.0f;
-    private double theta = 1.0f;
+    private double phi = 2.41f;
+    private double theta = -1.55f;
 
-    private double eyeX = 20.0f;
-    private double eyeY = 20.0f;
-    private double eyeZ = 20.0f;
+    private double eyeX = 125.0f;
+    private double eyeY = 145.0f;
+    private double eyeZ = -7.0f;
     private double delta = 0.1f;
 
     private double dirX;
@@ -69,6 +69,7 @@ public class Scene implements GLEventListener{
     private Planet planet3;
     private Planet planet4;
     private Planet planet5;
+    private Planet planet6;
 
     private Isocaedre isocaedre;
 
@@ -92,7 +93,7 @@ public class Scene implements GLEventListener{
 
         gl.glEnable(GL2.GL_CULL_FACE);
 
-        float lmodel_ambient[]={1.f,1.f,1.f,0.0f};
+        float lmodel_ambient[]={0.5f,0.5f,0.5f,0.2f};
 
         gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -107,7 +108,7 @@ public class Scene implements GLEventListener{
         float dif[] = {1.0f,1.0f,0.5f,1.0f};
         gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_DIFFUSE,dif, 0);
 
-        float amb[] = {1.0f,0.0f,0.0f,0.1f};
+        float amb[] = {1.0f,0.2f,0.2f,0.1f};
         gl.glLightfv(GL2.GL_LIGHT0,GL2.GL_AMBIENT,amb, 0);
 
         float l_pos[] = { 0.0f,0.0f,0.0f,1.0f };
@@ -142,26 +143,10 @@ public class Scene implements GLEventListener{
         gl.glPushMatrix();
         planet5.display(gl);
 
-        gl.glPopMatrix();
-        gl.glTranslated(50, 0, 0);
         isocaedre.display(gl);
 
-        /*
-            gl.glPopMatrix();
-            gl.glTexParameteri(GL2.GL_TEXTURE_2D,
-                    GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
-            gl.glTexParameteri(GL2.GL_TEXTURE_2D,
-                    GL2.GL_TEXTURE_WRAP_T, GL2.GL_REPEAT);
-
-            gl.glMatrixMode(GL2.GL_TEXTURE);
-            gl.glLoadIdentity();
-            gl.glRotated(rot*0.1, 0., 0., 1);
-            gl.glMatrixMode(GL2.GL_MODELVIEW);
-*/
-        /*gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-        IntBuffer pignonsbuf = Buffers.newDirectIntBuffer(pignons);
-        gl.glVertexPointer(3, GL2.GL_INT,0,pignonsbuf);
-        gl.glDrawElements(GL2.GL_TRIANGLES,6*3,GL2.GL_UNSIGNED_INT,pignonsbuf);*/
+        gl.glPopMatrix();
+        planet6.display(gl);
 
         /**Affichage fps**/
         float time=drawable.getAnimator().getLastFPS();
@@ -198,16 +183,18 @@ public class Scene implements GLEventListener{
 
         //chargement des planètes
         planet1 = new Planet(25., 10., 0., 0., glu, "Textures/sun01.jpg");
-        planet1.setEmission(new float[]{1f, 0.8f, 0f, 1f});
+        planet1.getMaterial().setEmission(new float[]{1f, 0.8f, 0f, 1f});
 
         planet2 = new Planet(3., 10., 1., 50., glu, "Textures/planet01.jpg");
 
         planet3 = new Planet(1., 10., 0.5, 5., glu, "Textures/planet02.jpg");
 
         planet4 = new Planet(5., 10., 0.5, 85., glu, "Textures/planet03.jpg");
-        planet4.setEmission(new float[]{0.5f, 0f, 0f, 0.5f});
+        planet4.getMaterial().setEmission(new float[]{0.5f, 0f, 0f, 0.5f});
 
         planet5 = new Planet(8., 10., 0.2, 100., glu, "Textures/planet05.png");
+
+        planet6 = new Planet(15., 10., 0.15, 150., glu, "Textures/planet06.png");
 
         isocaedre = new Isocaedre(gl);
     }

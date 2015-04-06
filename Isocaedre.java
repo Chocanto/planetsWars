@@ -7,9 +7,24 @@ public class Isocaedre extends VBOModel {
     private double y;
     private double z;
     private int it=0;
+    private Material material;
 
     public Isocaedre(GL2 gl) {
         super(gl, 12, 20);
+
+        material = new Material();
+        material.setAmbient(new float[]{
+            0.0215f, 0.1745f, 0.0215f
+        });
+        material.setDiffuse(new float[]{
+            0.07568f, 0.61424f, 0.07568f
+        });
+        material.setSpecular(new float[]{
+            0.633f, 0.727811f, 0.633f
+        });
+        material.setShininess(new float[]{
+            0.6f, 0.6f, 0.6f
+        });
     }
 
     @Override
@@ -90,8 +105,13 @@ public class Isocaedre extends VBOModel {
     public void display(GL2 gl) {
         it++;
         //gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+        gl.glRotated(it*0.1, 0.0, 0.0, 1.0);
+        gl.glTranslated(20, 0, 0);
         gl.glRotated(it, 0.0, 1.0, 0.0);
-        gl.glScaled(10.0, 10.0, 10.0);
+        gl.glScaled(5.0+Math.cos(it*0.05), 5.0+Math.cos(it*0.05), 5.0+Math.cos(it*0.05));
+
+        //matériaux
+        material.displayMaterial(gl);
 
         super.display(gl);
     }

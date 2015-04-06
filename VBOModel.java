@@ -100,7 +100,7 @@ public class VBOModel {
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, edgesVBO);
         gl.glDrawElements(GL2.GL_TRIANGLES, 60, GL2.GL_UNSIGNED_INT, 0);
 
-        /**Affichage des normales**/
+        /**Affichage des normales**
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, normalsLineVertVBO);
         gl.glVertexPointer(3, GL2.GL_DOUBLE, 0, 0);
 
@@ -201,9 +201,6 @@ public class VBOModel {
             normals[i+2] = normalVertex[2];
         }
 
-        for (int i=0; i<normals.length; i+=3)
-            System.out.println(normals[i]+";"+normals[i+1]+";"+normals[i+2]);
-
         /**Génération de l'affichage des normales  : **/
         //for (int i=60; i<edges.length*2; i+=6) {
         for (int i=0; i<normals.length*2; i+=6) {
@@ -219,9 +216,5 @@ public class VBOModel {
         for (int i=0; i<normalsLine.length; i++) {
             normalsLine[i] = i;
         }
-
-        System.out.println("--------------------");
-        for (int i=0; i<normalsLineVert.length; i+=3)
-            System.out.println(normalsLineVert[i]+";"+normalsLineVert[i+1]+";"+normalsLineVert[i+2]);
     }
 }
