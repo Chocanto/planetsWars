@@ -141,18 +141,8 @@ public class VBOModel {
 
             //faire le calcul de la normale
             for (int j=0; j<3; j++) {
-
-                //TODO : supprimer
-                /**HOT FIX pour l'isocaèdre**/
-                if (i < 15 || (i > 30 && i%6!=0)) {
-                    tmp1[j] = v1[j] - v2[j];
-                    tmp2[j] = v1[j] - v3[j];
-                }
-                else {
-                    tmp1[j] = v1[j] - v3[j];
-                    tmp2[j] = v1[j] - v2[j];
-                }
-                /****************************/
+                tmp1[j] = v1[j] - v2[j];
+                tmp2[j] = v1[j] - v3[j];
             }
 
             result[0] = tmp1[1] * tmp2[2] - tmp1[2] * tmp2[1];

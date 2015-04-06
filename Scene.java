@@ -89,7 +89,8 @@ public class Scene implements GLEventListener{
 
         GL2 gl = drawable.getGL().getGL2();
         gl.glClear (GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
-        //gl.glEnable(GL2.GL_CULL_FACE);
+
+        gl.glEnable(GL2.GL_CULL_FACE);
 
         float lmodel_ambient[]={1.f,1.f,1.f,0.0f};
 

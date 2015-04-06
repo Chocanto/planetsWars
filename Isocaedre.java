@@ -49,6 +49,7 @@ public class Isocaedre extends VBOModel {
                 edges[i] = 11;
 
             edges[i+1] = (i/3)+1;
+
             if (i==12) {
                 edges[i+2] = 1;
             }
@@ -58,14 +59,22 @@ public class Isocaedre extends VBOModel {
             else {
                 edges[i+2] = (i/3)+2;
             }
+
+            //On "retourne" le triangle pour plaquer
+            //la face du bon côté
+            if (i >= 15) {
+                int tmp = edges[i];
+                edges[i] = edges[i+2];
+                edges[i+2] = tmp;
+            }
         }
 
         //faces au "centre"
         for (int i=30; i<60; i+=3) {
             if (i%6 == 0) {
-                edges[i] = 5+((1+(i/6-5))%6);
+                edges[i+2] = 5+((1+(i/6-5))%6);
                 edges[i+1] = 1+((i/6-5)%5);
-                edges[i+2] = 1+((1+(i/6-5))%5);
+                edges[i] = 1+((1+(i/6-5))%5);
             }
             else {
                 edges[i] = 1+((1+(i/6-5))%5);
@@ -80,8 +89,8 @@ public class Isocaedre extends VBOModel {
     @Override
     public void display(GL2 gl) {
         it++;
-        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
-        //gl.glRotated(it, 0.0, 1.0, 0.0);
+        //gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+        gl.glRotated(it, 0.0, 1.0, 0.0);
         gl.glScaled(10.0, 10.0, 10.0);
 
         super.display(gl);
