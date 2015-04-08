@@ -25,6 +25,8 @@ public class Isocaedre extends VBOModel {
         material.setShininess(new float[]{
             0.6f, 0.6f, 0.6f
         });
+
+        prepare(gl);
     }
 
     @Override

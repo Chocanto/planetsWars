@@ -72,6 +72,10 @@ public class Scene implements GLEventListener{
     private Planet planet6;
 
     private Isocaedre isocaedre;
+    private Skybox skybox;
+    private JsonModel blockadeRunner;
+    private JsonModel x_wing;
+    private JsonModel y_wing;
 
     public Scene(GLCanvas parent) {
         this.parent = parent;
@@ -91,7 +95,7 @@ public class Scene implements GLEventListener{
         GL2 gl = drawable.getGL().getGL2();
         gl.glClear (GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 
-        gl.glEnable(GL2.GL_CULL_FACE);
+        //gl.glEnable(GL2.GL_CULL_FACE);
 
         float lmodel_ambient[]={0.5f,0.5f,0.5f,0.2f};
 
@@ -117,6 +121,12 @@ public class Scene implements GLEventListener{
         dirY = R*Math.cos(phi);
         dirZ = R*Math.sin(phi)*Math.cos(theta);
 
+        gl.glPushMatrix();
+        gl.glRotated(-theta*55, .0, 1.0, .0);
+        gl.glRotated(phi*55, .0, .0, 1.0);
+        skybox.display(gl);
+        gl.glPopMatrix();
+
         glu.gluLookAt(  eyeX, eyeY, eyeZ,
                         eyeX+dirX, eyeY+dirY, eyeZ+dirZ,
                         0,1,0);
@@ -125,6 +135,8 @@ public class Scene implements GLEventListener{
         /**Affichage repère**/
         gl.glPushMatrix();
         repere( drawable, 5.0f);
+
+        //skybox.display(gl);
 
         /**Affichage planètes**/
         planet1.display(gl);
@@ -146,7 +158,27 @@ public class Scene implements GLEventListener{
         isocaedre.display(gl);
 
         gl.glPopMatrix();
+        gl.glPushMatrix();
         planet6.display(gl);
+
+        gl.glPopMatrix();
+        gl.glPushMatrix();
+        gl.glColor3d(0.3, 0.3, 0.3);
+        gl.glTranslated(50., 0, 0);
+        gl.glScaled(10., 10., 10.);
+        blockadeRunner.display(gl);
+
+        gl.glPopMatrix();
+        gl.glPushMatrix();
+        gl.glTranslated(0, 0, 50.);
+        gl.glScaled(5., 5., 5.);
+        x_wing.display(gl);
+
+        gl.glPopMatrix();
+        gl.glTranslated(0, 0, -50.);
+        gl.glScaled(5., 5., 5.);
+        y_wing.display(gl);
+
 
         /**Affichage fps**/
         float time=drawable.getAnimator().getLastFPS();
@@ -181,7 +213,8 @@ public class Scene implements GLEventListener{
 
         textFPS = new TextRenderer(new Font("SansSerif", Font.BOLD, 11));
 
-        //chargement des planètes
+        /***Chargement des objets***/
+
         planet1 = new Planet(25., 10., 0., 0., glu, "Textures/sun01.jpg");
         planet1.getMaterial().setEmission(new float[]{1f, 0.8f, 0f, 1f});
 
@@ -197,6 +230,26 @@ public class Scene implements GLEventListener{
         planet6 = new Planet(15., 10., 0.15, 150., glu, "Textures/planet06.png");
 
         isocaedre = new Isocaedre(gl);
+
+        blockadeRunner = new JsonModel("3DModels/BlockadeRunner/BlockadeRunner.json", gl);
+        blockadeRunner.getMaterial().setAmbient(new float[]{0.2f, 0.2f, 0.2f});
+        blockadeRunner.getMaterial().setDiffuse(new float[]{0.512f, 0.512f, 0.512f});
+        blockadeRunner.getMaterial().setSpecular(new float[]{0.5f, 0.5f, 0.5f});
+        blockadeRunner.getMaterial().setShininess(new float[]{92f, 92f, 92f});
+
+        x_wing = new JsonModel("3DModels/X-Wing/X-Wing.json", gl);
+        x_wing.getMaterial().setAmbient(new float[]{0.2f, 0.2f, 0.2f});
+        x_wing.getMaterial().setDiffuse(new float[]{0.512f, 0.512f, 0.512f});
+        x_wing.getMaterial().setSpecular(new float[]{0.1f, 0.1f, 0.1f});
+        x_wing.getMaterial().setShininess(new float[]{92f, 92f, 92f});
+
+        y_wing = new JsonModel("3DModels/Y-Wing/Y-Wing.json", gl);
+        y_wing.getMaterial().setAmbient(new float[]{0.2f, 0.2f, 0.2f});
+        y_wing.getMaterial().setDiffuse(new float[]{0.512f, 0.512f, 0.512f});
+        y_wing.getMaterial().setSpecular(new float[]{0.4f, 0.4f, 0.4f});
+        y_wing.getMaterial().setShininess(new float[]{92f, 92f, 92f});
+
+        skybox = new Skybox(gl);
     }
 
     @Override

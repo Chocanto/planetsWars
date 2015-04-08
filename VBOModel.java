@@ -6,12 +6,14 @@ import com.jogamp.common.nio.Buffers;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import com.jogamp.opengl.util.texture.*;
 
 public class VBOModel {
 
     protected double[] vertices;
     protected int[] edges;
     protected double[] normals;
+    protected double[] textureCoord;
 
     protected int[] normalsLine;
     protected double[] normalsLineVert;
@@ -20,11 +22,15 @@ public class VBOModel {
     protected int verticesVBO;
     protected int edgesVBO;
     protected int normalsVBO;
+    protected int textureCoordVBO;
 
     protected int normalsLineVertVBO;
     protected int normalsLineVBO;
 
+    private Texture texture = null;
+
     public VBOModel(GL2 gl, int nVertices, int nTriangles) {
+
         vertices = new double[nVertices*3];
         edges = new int[nTriangles*3];
         normals = new double[nVertices*3];
@@ -32,9 +38,14 @@ public class VBOModel {
         //Pour debug
         normalsLineVert = new double[nVertices*6];
         normalsLine = new int[nVertices*2];
+    }
 
+    /**À appeler pour lancer la méthode build() et la création
+    des VBO**/
+    public void prepare(GL2 gl) {
         build();
         initVBO(gl);
+
     }
 
     public void build() {
@@ -45,11 +56,14 @@ public class VBOModel {
         DoubleBuffer verticesBuf =Buffers.newDirectDoubleBuffer(vertices);
         DoubleBuffer normalsBuf =Buffers.newDirectDoubleBuffer(normals);
         DoubleBuffer normalsLineVertBuf =Buffers.newDirectDoubleBuffer(normalsLineVert);
+        DoubleBuffer textureCoordBuf = null;
+        if (texture != null)
+            textureCoordBuf =Buffers.newDirectDoubleBuffer(textureCoord);
         IntBuffer edgesBuf =Buffers.newDirectIntBuffer(edges);
         IntBuffer normalsLineBuf =Buffers.newDirectIntBuffer(normalsLine);
 
-        int[] temp = new int[5];
-        gl.glGenBuffers(5, temp, 0);
+        int[] temp = new int[6];
+        gl.glGenBuffers(6, temp, 0);
 
         verticesVBO = temp[0];
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, temp[0]);
@@ -85,11 +99,28 @@ public class VBOModel {
             normalsLine.length * Buffers.SIZEOF_INT,
             normalsLineBuf, GL2.GL_STATIC_DRAW);
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, 0);
+
+        if (texture != null) {
+            textureCoordVBO = temp[5];
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, temp[5]);
+            gl.glBufferData(GL2.GL_ARRAY_BUFFER,
+                textureCoord.length * Buffers.SIZEOF_DOUBLE,
+                textureCoordBuf, GL2.GL_STATIC_DRAW);
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
+        }
     }
 
     public void display(GL2 gl) {
+
+        if (texture != null) {
+            texture.enable(gl);
+            texture.bind(gl);
+        }
+
         gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        if (texture != null)
+            gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
 
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, normalsVBO);
         gl.glNormalPointer(GL2.GL_DOUBLE, 0, 0);
@@ -97,8 +128,13 @@ public class VBOModel {
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, verticesVBO);
         gl.glVertexPointer(3, GL2.GL_DOUBLE, 0, 0);
 
+        if (texture != null) {
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, textureCoordVBO);
+            gl.glTexCoordPointer(3, GL2.GL_DOUBLE, 0, 0);
+        }
+
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, edgesVBO);
-        gl.glDrawElements(GL2.GL_TRIANGLES, 60, GL2.GL_UNSIGNED_INT, 0);
+        gl.glDrawElements(GL2.GL_TRIANGLES, edges.length, GL2.GL_UNSIGNED_INT, 0);
 
         /**Affichage des normales**
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, normalsLineVertVBO);
@@ -110,6 +146,8 @@ public class VBOModel {
 
         gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
+        if (texture != null)
+            gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
 
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -216,5 +254,9 @@ public class VBOModel {
         for (int i=0; i<normalsLine.length; i++) {
             normalsLine[i] = i;
         }
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
     }
 }
