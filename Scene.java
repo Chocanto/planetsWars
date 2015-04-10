@@ -121,11 +121,12 @@ public class Scene implements GLEventListener{
         dirY = R*Math.cos(phi);
         dirZ = R*Math.sin(phi)*Math.cos(theta);
 
-        gl.glPushMatrix();
+        //FIXME
+        /*gl.glPushMatrix();
         gl.glRotated(-theta*55, .0, 1.0, .0);
         gl.glRotated(phi*55, .0, .0, 1.0);
         skybox.display(gl);
-        gl.glPopMatrix();
+        gl.glPopMatrix();*/
 
         glu.gluLookAt(  eyeX, eyeY, eyeZ,
                         eyeX+dirX, eyeY+dirY, eyeZ+dirZ,
@@ -135,8 +136,6 @@ public class Scene implements GLEventListener{
         /**Affichage repère**/
         gl.glPushMatrix();
         repere( drawable, 5.0f);
-
-        //skybox.display(gl);
 
         /**Affichage planètes**/
         planet1.display(gl);

@@ -1,0 +1,52 @@
+<html>
+<head>
+<meta charset="UTF-8"/>
+</head>
+<body>
+<h1>Rapport du projet OpenGL</h1>
+<h2>But du projet</h2>
+<p>Le projet qui nous a été demandé de réaliser en OpenGL était la création d'un système solaire, composé d'un soleil et de plusieurs satellites/planètes
+tournant autour de celui-ci. Egalement il a été demandé d'importer des modèles de vaisseaux spatiaux à partir de fichier(s) Json, et de créer un isocaèdre
+. Chaque maillage devait être texturé, et un système de lumière mis en place.
+Concernant la vue, la caméra pourra se déplacer dans l'espace, c'est à dire se déplacer en avant, en arrière, à gauche et à droite, pouvoir monter et descendre.
+Bien entendu, il sera possible de modifier le point de focus afin d'orienter la caméra.</p>
+<h2>Etapes de réalisation</h2>
+<p>La première étape dans la réalisation a été de definir un objet permettant de créer des sphères dans la vue. A l'appel du constructeur il faut donc indiquer
+la taille de la sphère, deux valeurs qui définissent le diamètre et la vitesse de rotation de celle-ci autour du point d'origine ainsi qu'un chemin vers 
+le fichier de texture. La planète est ainsi dessinée sur la sphère dont les normales ont déjà été prédéfinies par l'appel aux méthodes GluQuadric...</p>
+<p>La seconde étape, après avoir créé l'astre et ses satellites, a été de réaliser une caméra fonctionnelle. Actuellement, cette dernière répond à toute les attentes
+du projet. On peut orienter la caméra avec la souris, se déplacer dans l'espace avec les touches z,q,s,d pour avancer, aller à gauche , reculer et aller à droite;
+les touches a, e servent quant à elles à monter et descendre.</p>
+<p>La lumière émise par le soleil est représenté dans la vue 3D par une source de lumière placée au centre du système. OpenGL ne gérant pas nativement les ombres portées, placer la lumière à l'intérieur d'un objet (ici la sphère représentant l'étoile) permettait à cette lumière d'émettre jusqu'aux autres planètes.</p>
+<p>Les matériaux ont été appliqués sur chacun des objets présents dans la scène. Un matériau permet de définir les composantes suivantes :
+<ul>
+  <li>Ambient</li>
+  <li>Emission</li>
+  <li>Diffuse</li>
+  <li>Specular</li>
+  <li>Shininess</li>
+</ul>
+Chacunes de ces composantes permettent au processeur graphique de modéliser approximativement l'effet de la lumière sur un objet coloré tout en considérant la direction du regard de l'utilisateur.
+</p>
+<p>Un isocaèdre est également présent dans le projet. Cette forme géométrique est composé de 20 faces,
+plus précisément 20 triangles équilatéraux égaux entre eux. Celui ci est généré en plusieurs étapes:
+la première est de spécifier le point le plus bas de l'objet. Ensuite on génère la "première" couche
+de face , composé de 5 triangles, dont une des pointes est le point spécifié précédemment. Leurs autres sommets
+sont finalement les sommets d'un hexagone que l'on trace pour définir la hauteur de la première couche.
+la deuxième couche se génère entre le premier hexagone, puis un second hexagone situé au dessus du premier mais auquel on effectue
+une rotation de 45°. La distance qui les sépare est égale à la hauteur d'une face de la figure. Cette seconde couche 
+est constituée de 10 triangles. Enfin la dernière couche, constituée des 5 derniers triangles, se dessine de la même façon
+que la première mais inversée. Les triangles possèdent un sommet en commun, qui sera donc le point le plus haut de la figure.
+Cependant, le travail sur ce volume a nécéssité également le calcul des normales des faces afin de pouvoir avoir un rendu d'éclairage
+correct.
+La première étape de génération des normales constitue le calcul des normales par face. Ici, vu que nous utilisons des triangles, la normale correspont au produit vectoriel des deux vecteurs définissant le triangle(un triangle pouvant être défini par seulement deux vecteurs). Ce calcul est effectué sur toutes les faces.<br/>
+Puis il est nécessaire de calculer une normale par sommets. Pour cela il suffit de trouver les faces qui contiennent le point qui nous interesse, de prendre leur normales respectives, puis de faire la moyenne de toutes ces normales. Le résultat de la moyenne constitue donc la normale du point.<br/>
+Lors de la génération des normales pour un modèle donné nous nous sommes rendu compte que certaines normales étaient "inversée" dans leur direction. En fait cela venait du choix de l'ordre des points du triangle. En inverssant l'ordre de dessin des points du triangle on inverssait la direction de la normale.</p>
+<p>Nous avons, pour charger les modèles de vaisseaux, créé une classe JsonModel qui s'occupe de lire un fichier Json,
+afin de pouvoir, à l'appel du constructeur , charger les tableaux de valeurs , d'indices et de normales des maillages à partir du path du fichier avant de les dessiner
+dans la vue.</p>
+<p>
+Enfin, nous avons voulu intégrer une skybox au projet. Nous utilisons pour cela un CubeMap composé de six textures. Chaque texture est appliquée à un cube qui contient la caméra et se translate avec elle. Seule la rotation est inverse à la rotation de la caméra pour créer l'effet d'un ciel lointain inaccessible. Nous nous sommes malheureusement confronté à un problème de passage à OpenGL de la texture au format CubeMap, celui-ci s'obtine à n'utiliser que la dernière texture plaquée via la méthode standard et non en CubeMap.
+</p>
+</body>
+</html>

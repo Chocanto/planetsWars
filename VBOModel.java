@@ -27,6 +27,8 @@ public class VBOModel {
     protected int normalsLineVertVBO;
     protected int normalsLineVBO;
 
+    protected boolean useCubemap = false;
+
     private Texture texture = null;
 
     public VBOModel(GL2 gl, int nVertices, int nTriangles) {
@@ -57,7 +59,7 @@ public class VBOModel {
         DoubleBuffer normalsBuf =Buffers.newDirectDoubleBuffer(normals);
         DoubleBuffer normalsLineVertBuf =Buffers.newDirectDoubleBuffer(normalsLineVert);
         DoubleBuffer textureCoordBuf = null;
-        if (texture != null)
+        if (texture != null && !useCubemap)
             textureCoordBuf =Buffers.newDirectDoubleBuffer(textureCoord);
         IntBuffer edgesBuf =Buffers.newDirectIntBuffer(edges);
         IntBuffer normalsLineBuf =Buffers.newDirectIntBuffer(normalsLine);
@@ -100,7 +102,7 @@ public class VBOModel {
             normalsLineBuf, GL2.GL_STATIC_DRAW);
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, 0);
 
-        if (texture != null) {
+        if (texture != null && !useCubemap) {
             textureCoordVBO = temp[5];
             gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, temp[5]);
             gl.glBufferData(GL2.GL_ARRAY_BUFFER,
@@ -111,15 +113,37 @@ public class VBOModel {
     }
 
     public void display(GL2 gl) {
-
         if (texture != null) {
-            texture.enable(gl);
-            texture.bind(gl);
+            if (useCubemap) {
+
+                gl.glTexParameteri(GL2.GL_TEXTURE_2D,GL2.GL_TEXTURE_WRAP_S,GL2.GL_CLAMP);
+                gl.glTexParameteri(GL2.GL_TEXTURE_2D,GL2.GL_TEXTURE_WRAP_T,GL2.GL_CLAMP);
+
+                texture.enable(gl);
+                texture.bind(gl);
+
+                gl.glTexEnvf(GL2.GL_TEXTURE_ENV, GL2.GL_TEXTURE_ENV_MODE, GL2.GL_MODULATE);
+                gl.glEnable(GL2.GL_TEXTURE_CUBE_MAP);
+                gl.glEnable(GL2.GL_TEXTURE_GEN_S);
+                gl.glEnable(GL2.GL_TEXTURE_GEN_T);
+                gl.glEnable(GL2.GL_TEXTURE_GEN_R);
+
+                gl.glTexGeni(GL2.GL_S, GL2.GL_TEXTURE_GEN_MODE, GL2.GL_REFLECTION_MAP);
+                gl.glTexGeni(GL2.GL_T, GL2.GL_TEXTURE_GEN_MODE, GL2.GL_REFLECTION_MAP);
+                gl.glTexGeni(GL2.GL_R, GL2.GL_TEXTURE_GEN_MODE, GL2.GL_REFLECTION_MAP);
+
+            }
+            else {
+                gl.glTexParameteri(GL2.GL_TEXTURE_2D,GL2.GL_TEXTURE_WRAP_S,GL2.GL_CLAMP);
+                gl.glTexParameteri(GL2.GL_TEXTURE_2D,GL2.GL_TEXTURE_WRAP_T,GL2.GL_CLAMP);
+                texture.enable(gl);
+                texture.bind(gl);
+            }
         }
 
         gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-        if (texture != null)
+        if (texture != null && !useCubemap)
             gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
 
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, normalsVBO);
@@ -128,7 +152,7 @@ public class VBOModel {
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, verticesVBO);
         gl.glVertexPointer(3, GL2.GL_DOUBLE, 0, 0);
 
-        if (texture != null) {
+        if (texture != null && !useCubemap) {
             gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, textureCoordVBO);
             gl.glTexCoordPointer(3, GL2.GL_DOUBLE, 0, 0);
         }
@@ -146,11 +170,21 @@ public class VBOModel {
 
         gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
-        if (texture != null)
+        if (texture != null && !useCubemap)
             gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
 
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, 0);
+
+        if (texture != null) {
+            if (useCubemap) {
+                gl.glDisable(GL2.GL_TEXTURE_CUBE_MAP);
+                gl.glDisable(GL2.GL_TEXTURE_GEN_S);
+                gl.glDisable(GL2.GL_TEXTURE_GEN_T);
+                gl.glDisable(GL2.GL_TEXTURE_GEN_R);
+            }
+            texture.disable(gl);
+        }
     }
 
     public void computeNormals() {
